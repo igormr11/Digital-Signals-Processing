@@ -17,26 +17,26 @@ leiA = []
 uniform_err = []
 compressed_err = []
 
-#Quantização Uniforme
+#Uniform Quantization
 
 for n in [1,2,3,4,5,6,7,8]:
-    R = V/(2**n)        # Resolução
+    R = V/(2**n)        # Resolution
     quant = [];
     err = [];
     for i in list:
         for x in i:
-            b = int((x+1)/R)    # Determinação do nível
-            xq = -1 + b*R       # Sinal quantizado
+            b = int((x+1)/R)    # Determining the level of the current sample
+            xq = -1 + b*R       # Quantized sample
             eq = (x - xq)**2
-            quant.append(xq)    # Guarda as amostras do sinal quantizado
-            err.append(eq)      # Guarda o erro quadrático
-    err_med = sum(err)/len(err) # Cálcula o erro médio quadrático
+            quant.append(xq) 
+            err.append(eq)      # Store the quadratic error
+    err_med = sum(err)/len(err) # Mean square error
     figure()
     plot(quant)
-    uniform_err.append(err_med) # Guarda os valores do erro medio para cada n
-    uniform.append(quant)       # Guarda os valores quantizados para cada n
+    uniform_err.append(err_med) # Store the values of the mean square error for each n
+    uniform.append(quant)       # Store the quantized signal for each n
 
-#Quantização LeiA
+#A-Law quantization
 
 for i in list:
     for x in i:
@@ -52,41 +52,39 @@ for i in list:
         compressed.append(c)
 
 for n in [1,2,3,4,5,6,7,8]:
-    R = V/(2**n)                # Resolução
+    R = V/(2**n)               
     quant = [];
     err = [];
     for x in compressed:
-            b = int((x+1)/R)    # Determinação do nível
-            xq = -1 + b*R       # Sinal quantizado
+            b = int((x+1)/R)    
+            xq = -1 + b*R       
             quant.append(xq)
-            err.append(eq)      # Guarda o erro quadrático
-    err_med = sum(err)/len(err) # Cálcula o erro médio quadrático
+            err.append(eq)      
+    err_med = sum(err)/len(err) 
     figure()
     plot(quant)
     leiA.append(quant)
     compressed_err.append(err_med)
 
 # Printando erros
-print ("Valores de erro médio quadrático:")
+print ("Values of the mean square error")
 for i in [0,1,2,3,4,5,6,7]:
-    print ("Número de bits igual a ", i+1)
-    print ("Quantização Uniforme: e =", uniform_err[i], "V\nQuantização Lei A: e =", compressed_err[i], "V")
+    print ("Bits per sample: ", i+1)
+    print ("Uniform quantization: e =", uniform_err[i], "V\nA-Law Quantization: e =", compressed_err[i], "V")
     print ("----------------------------")
 
 # Reproduzindo audios
-print ("Reproduzindo áudios")
+print ("Playing audios")
 for i in [0,1,2,3,4,5,6,7]:
-    print ("Número de bits igual a", i+1)
-    print ("Quantização Uniforme...")
+    print ("Bits per sample: ", i+1)
+    print ("Uniform quantization...")
     sd.play(uniform[i], 8000)
     time.sleep(4)
-    print ("Quantização Lei A...")
+    print ("A-Law quantization...")
     sd.play(leiA[i], 8000)
     time.sleep(4)
     print ("--------------------")
 
 show()
 
-# Figuras de 1 a 8 correspondem à quantização linear e figuras de 9 a 16 correspondem à quantização não linear
-# O valor de erro médio quadrático é muito menor para a quantização não linear, principalmente para um número de bits menor que 7
-# A inteligibilidade do áudio aumenta com o número de bits, a mensagem pode ser compreendida a partir de n = 5.
+# Figures 1 to 8 are for linear quantization and figures 9 to 16 corresponds to A-Law quantization
